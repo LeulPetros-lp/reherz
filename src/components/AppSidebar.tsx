@@ -1,8 +1,11 @@
 import { Settings as SettingsIcon, Play, Trash2 } from "lucide-react";
-import { SpeechSession } from "@/types/speech";
+import { SpeechSession, SessionType } from "@/types/speech";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Logo from "./Logo";
+import { SessionListSkeleton } from "@/components/skeletons";
+import { useLoadingState } from "@/hooks/useLoadingState";
+import SessionTypeDropdown from "./SessionTypeDropdown";
 
 import { useNavigate } from "react-router-dom";
 
@@ -24,6 +27,13 @@ const AppSidebar = ({
   onSessionsUpdate,
 }: AppSidebarProps) => {
   const navigate = useNavigate();
+  const { isLoading } = useLoadingState({ minDuration: 600, delay: 200 });
+
+  const handleSessionTypeSelect = (type: SessionType) => {
+    // Store the session type in localStorage for use in the recording preferences
+    localStorage.setItem('selected-session-type', type);
+    navigate('/recording-preferences');
+  };
 
   // Handle deletion from localStorage and UI
   const handleDeleteSession = (id: string) => {
@@ -62,33 +72,30 @@ const AppSidebar = ({
         </div>
 
         <ScrollArea className="flex-1 px-2">
-          {sessions.length === 0 ? (
+          {isLoading ? (
+            // Loading State
+            <SessionListSkeleton />
+          ) : sessions.length === 0 ? (
             // Empty State
             <div className="flex flex-col gap-4">
               <div className="p-4 text-center text-sm text-muted-foreground">
                 No sessions yet
               </div>
               <div className="px-4">
-                <Button
-                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
-                  onClick={() => navigate("/recording-preferences")}
-                >
-                  <Play className="w-4 h-4 mr-2" />
-                  New Session
-                </Button>
+                <SessionTypeDropdown onSelectType={handleSessionTypeSelect} />
               </div>
             </div>
           ) : (
             // Sessions List
             <div className="space-y-1 pb-4">
-              {sessions.map((session) => (
+              {sessions.map((session, index) => (
                 <div
                   key={session.id}
-                  className={`group relative w-full text-left p-3 rounded-md transition-colors ${
+                  className={`group relative w-full text-left p-3 rounded-md transition-smooth animate-slide-right ${
                     selectedSessionId === session.id
                       ? "bg-secondary text-foreground"
                       : "hover:bg-secondary/50 text-sidebar-foreground"
-                  }`}
+                  } stagger-${Math.min(index + 1, 5)}`}
                 >
                   <button
                     onClick={() => onSelectSession?.(session.id)}
@@ -120,13 +127,10 @@ const AppSidebar = ({
               ))}
 
               {/* New Session Button */}
-              <Button
-                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 mt-2"
-                onClick={() => navigate("/recording-preferences")}
-              >
-                <Play className="w-4 h-4 mr-2" />
-                New Session
-              </Button>
+              <SessionTypeDropdown 
+                onSelectType={handleSessionTypeSelect} 
+                className="mt-2"
+              />
             </div>
           )}
         </ScrollArea>

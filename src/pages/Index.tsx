@@ -1,15 +1,17 @@
 import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import SessionRecorder from '@/components/SessionRecorder';
 import RecordingPreferencesModal from '@/components/RecordingPreferencesModal';
 import AppSidebar from '@/components/AppSidebar';
 import SpeechScoreCard from '@/components/SpeechScoreCard';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useLoadingState } from '@/hooks/useLoadingState';
 import StartSessionModal from '@/components/StartSessionModal';
 import SettingsModal from '@/components/SettingsModal';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Sparkles as spark, Sparkle, Sparkles } from "lucide-react";
-
+import { ChartSkeleton } from '@/components/skeletons';
 
 import { SpeechSession, SpeechScore } from '@/types/speech';
 import { BarChart3, Clock, Activity, Volume2, Plus, Trash2 } from 'lucide-react';
@@ -50,7 +52,9 @@ const sessionData = generateSessionData();
 const latestSession = sessionData[sessionData.length - 1];
 
 const Index = () => {
+  const navigate = useNavigate();
   const [sessions, setSessions] = useLocalStorage('speech-sessions', []);
+  const { isLoading } = useLoadingState({ minDuration: 800, delay: 300 });
 
   const [defaultDuration, setDefaultDuration] = useState(5);
   const [sessionModalOpen, setSessionModalOpen] = useState(false);
@@ -131,115 +135,119 @@ const Index = () => {
 
         <main className="flex-1 overflow-y-auto">
           <div className="max-w-5xl mx-auto px-6 py-8 md:py-12 space-y-8">
-            <div>
+            <div className="animate-slide-down">
               <h1 className="text-3xl font-bold">Last Session (Session 2)</h1>
               <p className="text-muted-foreground mt-2">Practice makes you better they say... Try again if you are not satisfied with your score</p>
             </div>
             
             {/* Session Summary */}
-            <Card className="p-6 shadow-card border border-border">
-              <div className="flex justify-between items-start mb-6">
-                <div>
-                  <h3 className="text-lg font-semibold">Session Summary</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Session: {new Date(sessionData[0]?.timestamp).toLocaleTimeString()} - {new Date(sessionData[sessionData.length - 1]?.timestamp).toLocaleTimeString()}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center text-sm text-muted-foreground">
-                    <div className="w-3 h-3 rounded-full bg-primary mr-1.5"></div>
-                    <span>Average Pose score</span>
+            {isLoading ? (
+              <ChartSkeleton />
+            ) : (
+              <Card className="p-6 shadow-card border border-border animate-slide-up">
+                <div className="flex justify-between items-start mb-6">
+                  <div>
+                    <h3 className="text-lg font-semibold">Session Summary</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Session: {new Date(sessionData[0]?.timestamp).toLocaleTimeString()} - {new Date(sessionData[sessionData.length - 1]?.timestamp).toLocaleTimeString()}
+                    </p>
                   </div>
-                  <div className="flex items-center text-sm text-muted-foreground ml-3">
-                    <div className="w-3 h-3 rounded-full bg-emerald-500 mr-1.5"></div>
-                    <span>Average Tone score</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="h-64 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={sessionData}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-muted" />
-                    <XAxis 
-                      dataKey="time" 
-                      axisLine={false} 
-                      tickLine={false}
-                      tick={{ fontSize: 12 }}
-                      padding={{ left: 10, right: 10 }}
-                    />
-                    <YAxis 
-                      domain={[6, 10]} 
-                      axisLine={false} 
-                      tickLine={false}
-                      tick={{ fontSize: 12 }}
-                      width={20}
-                      tickCount={5}
-                      tickFormatter={(value) => value.toFixed(0)}
-                    />
-                    <Tooltip 
-                      contentStyle={{
-                        backgroundColor: 'hsl(var(--popover))',
-                        borderColor: 'hsl(var(--border))',
-                        borderRadius: 'var(--radius)',
-                      }}
-                      labelStyle={{ color: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="pose" 
-                      stroke="hsl(var(--primary))" 
-                      strokeWidth={2}
-                      dot={false}
-                      activeDot={{ r: 4, strokeWidth: 0 }}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="tone" 
-                      stroke="rgb(16, 185, 129)" 
-                      strokeWidth={2}
-                      dot={false}
-                      strokeDasharray="5 5"
-                      activeDot={{ r: 4, strokeWidth: 0 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-              
-              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 bg-secondary/20 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                      <Activity className="w-5 h-5 text-primary" />
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <div className="w-3 h-3 rounded-full bg-primary mr-1.5"></div>
+                      <span>Average Pose score</span>
                     </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Latest Pose Score</p>
-                      <p className="text-2xl font-bold">{latestSession.pose.toFixed(1)}/10</p>
+                    <div className="flex items-center text-sm text-muted-foreground ml-3">
+                      <div className="w-3 h-3 rounded-full bg-emerald-500 mr-1.5"></div>
+                      <span>Average Tone score</span>
                     </div>
                   </div>
                 </div>
-                <div className="p-4 bg-secondary/20 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-emerald-500/10">
-                      <Volume2 className="w-5 h-5 text-emerald-500" />
+                
+                <div className="h-64 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={sessionData}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-muted" />
+                      <XAxis 
+                        dataKey="time" 
+                        axisLine={false} 
+                        tickLine={false}
+                        tick={{ fontSize: 12 }}
+                        padding={{ left: 10, right: 10 }}
+                      />
+                      <YAxis 
+                        domain={[6, 10]} 
+                        axisLine={false} 
+                        tickLine={false}
+                        tick={{ fontSize: 12 }}
+                        width={20}
+                        tickCount={5}
+                        tickFormatter={(value) => value.toFixed(0)}
+                      />
+                      <Tooltip 
+                        contentStyle={{
+                          backgroundColor: 'hsl(var(--popover))',
+                          borderColor: 'hsl(var(--border))',
+                          borderRadius: 'var(--radius)',
+                        }}
+                        labelStyle={{ color: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="pose" 
+                        stroke="hsl(var(--primary))" 
+                        strokeWidth={2}
+                        dot={false}
+                        activeDot={{ r: 4, strokeWidth: 0 }}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="tone" 
+                        stroke="rgb(16, 185, 129)" 
+                        strokeWidth={2}
+                        dot={false}
+                        strokeDasharray="5 5"
+                        activeDot={{ r: 4, strokeWidth: 0 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+                
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 bg-secondary/20 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-primary/10">
+                        <Activity className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Latest Pose Score</p>
+                        <p className="text-2xl font-bold">{latestSession.pose.toFixed(1)}/10</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Latest Tone Score</p>
-                      <p className="text-2xl font-bold">{latestSession.tone.toFixed(1)}/10</p>
+                  </div>
+                  <div className="p-4 bg-secondary/20 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-emerald-500/10">
+                        <Volume2 className="w-5 h-5 text-emerald-500" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Latest Tone Score</p>
+                        <p className="text-2xl font-bold">{latestSession.tone.toFixed(1)}/10</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              
-              <Button
-                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                
+                <Button
+                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                    onClick={() => navigate('/data-analysis')}
+                  >
+                    <Sparkles className="w-4 h-4 mr-2" />
 
-                >
-                  <Sparkles className="w-4 h-4 mr-2" />
-
-                  Explain my data
-              </Button>
-            </Card>
+                    Explain my data
+                </Button>
+              </Card>
+            )}
             {/*  */}
        
 

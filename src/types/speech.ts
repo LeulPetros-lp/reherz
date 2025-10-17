@@ -1,3 +1,5 @@
+export type SessionType = 'debate' | 'presentation' | 'speech';
+
 export interface SpeechSession {
   id: string;
   name: string;
@@ -5,6 +7,7 @@ export interface SpeechSession {
   duration: number; // in minutes
   score: SpeechScore;
   videoUrl?: string; // URL to the recorded video
+  type?: SessionType; // Type of session
 }
 
 export interface SpeechScore {

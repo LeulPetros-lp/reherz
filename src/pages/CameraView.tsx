@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { Card } from '@/components/ui/card';
 import { Menu } from 'lucide-react';
+import { CameraViewSkeleton } from '@/components/skeletons';
 
 const CameraView = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const CameraView = () => {
   const [timeRemaining, setTimeRemaining] = useState(defaultDuration * 60);
   const [sessions] = useLocalStorage('speech-sessions', []);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [cameraReady, setCameraReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   
@@ -31,9 +33,11 @@ const CameraView = () => {
           }
           // Start recording automatically when camera is ready
           setIsRecording(true);
+          setCameraReady(true);
         })
         .catch(err => {
           console.error("Error accessing camera:", err);
+          setCameraReady(true); // Show error state instead of loading
         });
     }
     
@@ -95,6 +99,10 @@ const CameraView = () => {
     navigate('/');
   };
   
+  if (!cameraReady) {
+    return <CameraViewSkeleton />;
+  }
+
   return (
     <div className="min-h-screen w-full bg-black relative" ref={containerRef}>
       {/* Sidebar Toggle Button */}

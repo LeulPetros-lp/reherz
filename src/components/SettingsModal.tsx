@@ -3,8 +3,10 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Save } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Save, Moon, Sun } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { useTheme } from '@/hooks/useTheme';
 
 interface SettingsModalProps {
   open: boolean;
@@ -15,6 +17,7 @@ interface SettingsModalProps {
 
 const SettingsModal = ({ open, onOpenChange, defaultDuration, onSave }: SettingsModalProps) => {
   const [duration, setDuration] = useState(defaultDuration);
+  const { theme, toggleTheme } = useTheme();
 
   const handleSave = () => {
     onSave(duration);
@@ -35,8 +38,39 @@ const SettingsModal = ({ open, onOpenChange, defaultDuration, onSave }: Settings
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 pt-4">
-          <div className="space-y-2">
+        <div className="space-y-6 pt-4">
+          {/* Theme Toggle */}
+          <div className="space-y-3 p-4 rounded-lg border border-border bg-secondary/20 animate-slide-up">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {theme === 'dark' ? (
+                  <Moon className="w-5 h-5 text-primary" />
+                ) : (
+                  <Sun className="w-5 h-5 text-primary" />
+                )}
+                <div>
+                  <Label htmlFor="theme-toggle" className="text-base font-medium cursor-pointer">
+                    {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    {theme === 'dark' 
+                      ? 'Using dark theme for reduced eye strain'
+                      : 'Using light theme for bright environments'
+                    }
+                  </p>
+                </div>
+              </div>
+              <Switch
+                id="theme-toggle"
+                checked={theme === 'dark'}
+                onCheckedChange={toggleTheme}
+                className="transition-smooth"
+              />
+            </div>
+          </div>
+
+          {/* Duration Setting */}
+          <div className="space-y-2 animate-slide-up stagger-1">
             <Label htmlFor="default-duration">Default Session Duration (minutes)</Label>
             <Input
               id="default-duration"
@@ -52,7 +86,7 @@ const SettingsModal = ({ open, onOpenChange, defaultDuration, onSave }: Settings
           </div>
 
           <Button
-            className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+            className="w-full bg-primary text-primary-foreground hover:bg-primary/90 animate-slide-up stagger-2"
             size="lg"
             onClick={handleSave}
           >
