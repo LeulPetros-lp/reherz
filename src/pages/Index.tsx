@@ -89,6 +89,7 @@ const Index = () => {
     setSelectedSessionId(newSession.id);
     setRecordedVideo(videoBlob);
     setIsRecording(false);
+    navigate('/data-analysis');
   }, [sessions.length]);
 
   const deleteSession = (sessionId: string, e: React.MouseEvent) => {
@@ -119,18 +120,7 @@ const Index = () => {
     : 0;
 
   return (
-    <div className="min-h-screen flex w-full">
-      {/* Sidebar */}
-      <AppSidebar
-        sessions={sessions}
-        onStartSession={() => setSessionModalOpen(true)}
-        onSettingsClick={() => setSettingsModalOpen(true)}
-        selectedSessionId={selectedSessionId}
-        onSelectSession={setSelectedSessionId}
-      />
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+    <div className="min-h-screen w-full flex flex-col">
 
 
         <main className="flex-1 overflow-y-auto">
@@ -255,7 +245,6 @@ const Index = () => {
           
         </main>
         
-      </div>
 
 
       <StartSessionModal

@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-import AppSidebar from '@/components/AppSidebar';
 import ContextUpload from '@/components/ContextUpload';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -46,14 +44,7 @@ const RecordingPreferences = () => {
 
   return (
     <div className="min-h-screen flex w-full">
-      {/* Sidebar */}
-      <AppSidebar
-        sessions={sessions}
-        onStartSession={() => {}}
-        onSettingsClick={() => {}}
-        selectedSessionId=""
-        onSelectSession={() => {}}
-      />
+
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">

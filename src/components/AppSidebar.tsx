@@ -1,4 +1,5 @@
-import { Settings as SettingsIcon, Play, Trash2 } from "lucide-react";
+import { Play, Trash2 } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 import { SpeechSession, SessionType } from "@/types/speech";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -29,6 +30,7 @@ const AppSidebar = ({
   const navigate = useNavigate();
   const { isLoading } = useLoadingState({ minDuration: 600, delay: 200 });
 
+
   const handleSessionTypeSelect = (type: SessionType) => {
     // Store the session type in localStorage for use in the recording preferences
     localStorage.setItem('selected-session-type', type);
@@ -55,12 +57,7 @@ const AppSidebar = ({
       {/* Sidebar Header */}
       <div className="p-4 border-b border-sidebar-border flex justify-between items-center">
         <Logo />
-        <div
-          onClick={onSettingsClick}
-          className="p-1.5 rounded-md hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors"
-        >
-          <SettingsIcon className="w-4 h-4 text-muted-foreground hover:text-foreground" />
-        </div>
+        <ThemeToggle />
       </div>
 
       {/* Sessions Section */}

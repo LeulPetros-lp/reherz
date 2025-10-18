@@ -20,16 +20,16 @@ const SessionTypeDropdown = ({ onSelectType, className }: SessionTypeDropdownPro
         <Button
           className={`w-full bg-primary text-primary-foreground hover:bg-primary/90 animate-bounce-in ${className}`}
         >
-          <Play className="w-4 h-4 mr-2" />
+          <Play className="w-4 h-4 mr-2 group-hover:text-white" />
           New Session
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 animate-scale-in" align="start">
         <DropdownMenuItem 
-          className="cursor-pointer transition-smooth hover:bg-accent flex items-center gap-3 p-3"
+          className="cursor-pointer transition-smooth hover:bg-accent flex items-center gap-3 p-3 group"
           onClick={() => onSelectType('debate')}
         >
-          <MessageSquare className="w-5 h-5 text-primary" />
+          <MessageSquare className="w-5 h-5 text-primary group-hover:text-white" />
           <div>
             <div className="font-medium">Debate Mode</div>
             <div className="text-xs text-muted-foreground">Practice argumentative skills</div>
@@ -37,10 +37,10 @@ const SessionTypeDropdown = ({ onSelectType, className }: SessionTypeDropdownPro
         </DropdownMenuItem>
         
         <DropdownMenuItem 
-          className="cursor-pointer transition-smooth hover:bg-accent flex items-center gap-3 p-3"
+          className="cursor-pointer transition-smooth hover:bg-accent flex items-center gap-3 p-3 group"
           onClick={() => onSelectType('presentation')}
         >
-          <Presentation className="w-5 h-5 text-primary" />
+          <Presentation className="w-5 h-5 text-primary group-hover:text-white" />
           <div>
             <div className="font-medium">Presentation Mode</div>
             <div className="text-xs text-muted-foreground">Deliver structured presentations</div>
@@ -48,10 +48,10 @@ const SessionTypeDropdown = ({ onSelectType, className }: SessionTypeDropdownPro
         </DropdownMenuItem>
         
         <DropdownMenuItem 
-          className="cursor-pointer transition-smooth hover:bg-accent flex items-center gap-3 p-3"
+          className="cursor-pointer transition-smooth hover:bg-accent flex items-center gap-3 p-3 group"
           onClick={() => onSelectType('speech')}
         >
-          <Mic className="w-5 h-5 text-primary" />
+          <Mic className="w-5 h-5 text-primary group-hover:text-white" />
           <div>
             <div className="font-medium">Speech Mode</div>
             <div className="text-xs text-muted-foreground">General public speaking</div>

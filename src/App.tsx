@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import RecordingPreferences from "./pages/RecordingPreferences";
 import CameraView from "./pages/CameraView";
 import DataAnalysis from "./pages/DataAnalysis";
+import RootLayout from "./components/RootLayout";
 
 const queryClient = new QueryClient();
 
@@ -18,11 +19,13 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/recording-preferences" element={<RecordingPreferences />} />
-          <Route path="/camera-view" element={<CameraView />} />
-          <Route path="/data-analysis" element={<DataAnalysis />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route element={<RootLayout />}> 
+            <Route path="/" element={<Index />} />
+            <Route path="/recording-preferences" element={<RecordingPreferences />} />
+            <Route path="/camera-view" element={<CameraView />} />
+            <Route path="/data-analysis" element={<DataAnalysis />} />
+          </Route>
+          {/* catch-all */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
