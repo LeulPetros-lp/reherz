@@ -34,7 +34,14 @@ const AppSidebar = ({
   const handleSessionTypeSelect = (type: SessionType) => {
     // Store the session type in localStorage for use in the recording preferences
     localStorage.setItem('selected-session-type', type);
-    navigate('/recording-preferences');
+    // Navigate to specific preference page based on type
+    if (type === 'presentation') {
+      navigate('/presentation-preferences');
+    } else if (type === 'debate') {
+      navigate('/debate-preferences');
+    } else {
+      navigate('/speech-preferences');
+    }
   };
 
   // Handle deletion from localStorage and UI

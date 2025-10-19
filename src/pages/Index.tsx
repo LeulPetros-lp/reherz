@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { MessageSquare } from 'lucide-react';
 import SessionRecorder from '@/components/SessionRecorder';
 import RecordingPreferencesModal from '@/components/RecordingPreferencesModal';
 import AppSidebar from '@/components/AppSidebar';
@@ -230,10 +231,9 @@ const Index = () => {
                 
                 <Button
                     className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
-                    onClick={() => navigate('/data-analysis')}
+                    onClick={() => navigate('/chat-analysis', { state: { sessionData } })}
                   >
                     <Sparkles className="w-4 h-4 mr-2" />
-
                     Explain my data
                 </Button>
               </Card>
