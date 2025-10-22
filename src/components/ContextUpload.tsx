@@ -1,91 +1,69 @@
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Upload, FileText } from 'lucide-react';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { SessionType } from '@/types/speech';
+import DragDropZone from './upload/DragDropZone';
+import { Card } from '@/components/ui/card';
+import { FileText } from 'lucide-react';
 
 interface ContextUploadProps {
   onUpload?: (context: string) => void;
+  mode?: SessionType;
 }
 
-const ContextUpload = ({ onUpload }: ContextUploadProps) => {
-  const [file, setFile] = useState<File | null>(null);
-  const [context, setContext] = useState<string>('');
+const ContextUpload = ({ onUpload, mode = 'speech' }: ContextUploadProps) => {
   const [uploadedContext, setUploadedContext] = useLocalStorage<string>('presentation-context', '');
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      
-      // Read file content
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const content = event.target?.result as string;
-        setContext(content);
-      };
-      reader.readAsText(selectedFile);
+  const handleFileUpload = (file: File, content: string) => {
+    setUploadedContext(content);
+    if (onUpload) {
+      onUpload(content);
     }
   };
 
-  const handleUpload = () => {
-    if (context) {
-      setUploadedContext(context);
-      if (onUpload) {
-        onUpload(context);
-      }
+  const getModeTitle = () => {
+    switch (mode) {
+      case 'debate': return 'Upload Debate Materials';
+      case 'presentation': return 'Upload Presentation Context';
+      case 'speech': return 'Upload Speech Notes';
+    }
+  };
+
+  const getModeDescription = () => {
+    switch (mode) {
+      case 'debate': return 'Upload your arguments, counter-points, or reference materials';
+      case 'presentation': return 'Upload slide notes, talking points, or reference documents';
+      case 'speech': return 'Upload speech outline, notes, or key points';
     }
   };
 
   return (
-    <Card className="p-6 shadow-card border border-border">
-      <h3 className="text-lg font-semibold mb-4">Upload Presentation Context</h3>
-      
-      <div className="space-y-4">
-        <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
-          <input
-            type="file"
-            id="context-file"
-            accept=".txt,.md,.doc,.docx"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-          <label 
-            htmlFor="context-file" 
-            className="flex flex-col items-center justify-center cursor-pointer"
-          >
-            <Upload className="h-8 w-8 mb-2 text-muted-foreground" />
-            <p className="text-sm font-medium">
-              {file ? file.name : 'Click to upload or drag and drop'}
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">
-              TXT, MD, DOC, DOCX up to 10MB
-            </p>
-          </label>
-        </div>
-        
-        {file && (
-          <div className="flex items-center gap-2 text-sm">
-            <FileText className="h-4 w-4" />
-            <span className="font-medium">{file.name}</span>
-            <span className="text-muted-foreground">
-              ({Math.round(file.size / 1024)} KB)
-            </span>
-          </div>
-        )}
-        
-    
-        
-        {uploadedContext && (
-          <div className="mt-4">
-            <p className="text-sm font-medium">Current Context:</p>
-            <p className="text-xs text-muted-foreground mt-1 line-clamp-3">
-              {uploadedContext.substring(0, 150)}...
-            </p>
-          </div>
-        )}
+    <div className="space-y-4">
+      <div className="animate-slide-down">
+        <h3 className="text-lg font-semibold mb-1">{getModeTitle()}</h3>
+        <p className="text-sm text-muted-foreground">{getModeDescription()}</p>
       </div>
-    </Card>
+      
+      <DragDropZone 
+        onFileUpload={handleFileUpload}
+        acceptedTypes=".txt,.md"
+        maxSizeMB={10}
+        mode={mode}
+      />
+      
+      {uploadedContext && (
+        <Card className="p-4 bg-secondary/50 animate-slide-up">
+          <div className="flex items-start gap-2">
+            <FileText className="h-4 w-4 mt-0.5 text-muted-foreground" />
+            <div className="flex-1">
+              <p className="text-sm font-medium mb-1">Uploaded Content:</p>
+              <p className="text-xs text-muted-foreground line-clamp-3">
+                {uploadedContext.substring(0, 200)}...
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
+    </div>
   );
 };
 

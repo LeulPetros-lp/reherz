@@ -45,6 +45,19 @@ All colors MUST be HSL.
     --sidebar-foreground: 0 0% 0%;
     --sidebar-border: 0 0% 90%;
 
+    /* Mode-specific colors */
+    --debate: 16 77% 55%;
+    --debate-foreground: 0 0% 100%;
+    --debate-muted: 16 77% 95%;
+    
+    --presentation: 217 77% 55%;
+    --presentation-foreground: 0 0% 100%;
+    --presentation-muted: 217 77% 95%;
+    
+    --speech: 271 77% 55%;
+    --speech-foreground: 0 0% 100%;
+    --speech-muted: 271 77% 95%;
+
     --dot-pattern: radial-gradient(hsl(0 0% 85%) 1px, transparent 1px);
     --dot-size: 20px;
   }
@@ -81,9 +94,22 @@ All colors MUST be HSL.
     --input: 0 0% 20%;
     --ring: 0 0% 100%;
 
-    --sidebar-background: 0 0% 5%;
+    --sidebar-background: 0 0% 3%;
     --sidebar-foreground: 0 0% 100%;
     --sidebar-border: 0 0% 20%;
+
+    /* Mode-specific colors (dark mode) */
+    --debate: 16 82% 60%;
+    --debate-foreground: 0 0% 100%;
+    --debate-muted: 16 82% 15%;
+    
+    --presentation: 217 82% 60%;
+    --presentation-foreground: 0 0% 100%;
+    --presentation-muted: 217 82% 15%;
+    
+    --speech: 271 82% 60%;
+    --speech-foreground: 0 0% 100%;
+    --speech-muted: 271 82% 15%;
 
     --dot-pattern: radial-gradient(hsl(0 0% 15%) 1px, transparent 1px);
     --dot-size: 20px;
